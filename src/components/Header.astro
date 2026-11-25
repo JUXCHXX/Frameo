@@ -1,0 +1,166 @@
+---
+const nav = [
+  {
+    label: 'Producto',
+    items: [
+      { label: 'Cómo funciona', href: '/#como-funciona', desc: 'Del video al ZIP en 3 pasos' },
+      { label: 'Privacidad local', href: '/#privacidad', desc: 'Tus archivos no salen del navegador' },
+      { label: 'FAQ', href: '/#faq', desc: 'Respuestas rápidas' },
+    ],
+  },
+  {
+    label: 'Herramienta',
+    items: [
+      { label: 'Abrir Frameo', href: '/app', desc: 'Ir al convertidor de video a frames' },
+      { label: 'Formatos', href: '/#formatos', desc: 'PNG, JPG y control de frecuencia' },
+    ],
+  },
+];
+---
+<header class="site-header" id="site-header">
+  <div class="container header-inner">
+    <a href="/" class="brand" aria-label="Frameo inicio">
+      <img src="/logo.svg" alt="Frameo" width="150" height="44" />
+    </a>
+
+    <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Abrir menú">
+      <span></span><span></span>
+    </button>
+
+    <nav class="site-nav" id="site-nav" aria-label="Principal">
+      <div class="nav-links">
+        {nav.map((group) => (
+          <div class="nav-group">
+            <button class="nav-trigger" data-dropdown-trigger aria-expanded="false">
+              <span>{group.label}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="dropdown">
+              <div class="dropdown-inner">
+                {group.items.map((item) => (
+                  <a class="dropdown-item" href={item.href}>
+                    <strong>{item.label}</strong>
+                    <small>{item.desc}</small>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+        <a class="nav-simple" href="/#animaciones">Animaciones</a>
+      </div>
+      <a class="btn btn-primary nav-cta" href="/app">
+        Abrir app
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header');
+  const toggle = document.getElementById('menu-toggle');
+  const navEl = document.getElementById('site-nav');
+  const triggers = document.querySelectorAll('[data-dropdown-trigger]');
+
+  const closeDropdowns = (except) => {
+    triggers.forEach((btn) => {
+      if (except && btn === except) return;
+      btn.setAttribute('aria-expanded', 'false');
+      btn.closest('.nav-group')?.classList.remove('open');
+    });
+  };
+
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    navEl?.classList.toggle('open', !open);
+  });
+
+  triggers.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const group = btn.closest('.nav-group');
+      const isOpen = btn.getAttribute('aria-expanded') === 'true';
+      closeDropdowns(btn);
+      btn.setAttribute('aria-expanded', String(!isOpen));
+      group?.classList.toggle('open', !isOpen);
+      e.stopPropagation();
+    });
+  });
+
+  document.addEventListener('click', () => closeDropdowns());
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeDropdowns(); toggle?.setAttribute('aria-expanded','false'); navEl?.classList.remove('open'); } });
+  window.addEventListener('scroll', () => header?.classList.toggle('scrolled', window.scrollY > 12), { passive: true });
+</script>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 100;
+    padding: .85rem 0;
+    transition: background .3s ease, border-color .3s ease, backdrop-filter .3s ease;
+    border-bottom: 1px solid transparent;
+  }
+  .site-header.scrolled {
+    background: linear-gradient(180deg, rgba(18,22,28,.72), rgba(10,12,16,.56));
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-color: rgba(255,255,255,.1);
+    box-shadow: 0 8px 32px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .header-inner { display: flex; align-items: center; gap: 1.25rem; position: relative; }
+  .brand { display: inline-flex; align-items: center; flex-shrink: 0; }
+  .brand img { height: 42px; width: auto; }
+  .menu-toggle {
+    display: none; margin-left: auto; width: 44px; height: 44px; border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.1); align-items: center; justify-content: center; flex-direction: column; gap: 7px;
+  }
+  .menu-toggle span { width: 20px; height: 2px; background: white; transition: transform .25s ease, opacity .25s ease; }
+  .menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(4.5px) rotate(45deg); }
+  .menu-toggle[aria-expanded="true"] span:nth-child(2) { transform: translateY(-4.5px) rotate(-45deg); }
+
+  .site-nav { display: flex; align-items: center; gap: 1rem; margin-left: auto; }
+  .nav-links { display: flex; align-items: center; gap: .25rem; }
+  .nav-group { position: relative; }
+  .nav-trigger, .nav-simple {
+    display: inline-flex; align-items: center; gap: .35rem; padding: .75rem .9rem;
+    border-radius: 12px; color: rgba(255,255,255,.84); font-weight: 600; font-size: .94rem;
+    transition: color .2s ease, background .2s ease;
+  }
+  .nav-trigger:hover, .nav-simple:hover, .nav-group.open .nav-trigger { color: #fff; background: rgba(255,255,255,.05); }
+  .nav-trigger svg { transition: transform .25s ease; opacity: .7; }
+  .nav-group.open .nav-trigger svg { transform: rotate(180deg); }
+  .dropdown {
+    position: absolute; left: 0; top: calc(100% + .5rem); min-width: 290px; padding-top: .25rem;
+    opacity: 0; transform: translateY(10px) scale(.98); pointer-events: none;
+    transition: opacity .25s ease, transform .25s ease;
+  }
+  .nav-group.open .dropdown { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+  .dropdown-inner {
+    padding: .5rem; border-radius: 18px; background: linear-gradient(180deg, rgba(30,36,44,.78), rgba(16,20,26,.72));
+    border: 1px solid rgba(255,255,255,.14); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+    box-shadow: 0 20px 50px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.12);
+  }
+  .dropdown-item {
+    display: flex; flex-direction: column; gap: .15rem; padding: .85rem .9rem; border-radius: 14px;
+    transition: background .2s ease, transform .2s ease;
+  }
+  .dropdown-item:hover { background: rgba(0,245,212,.08); transform: translateX(2px); }
+  .dropdown-item strong { font-size: .92rem; }
+  .dropdown-item small { color: rgba(255,255,255,.58); font-size: .78rem; line-height: 1.4; }
+  .nav-cta { padding: .8rem 1.15rem; font-size: .92rem; }
+
+  @media (max-width: 900px) {
+    .menu-toggle { display: inline-flex; }
+    .site-nav {
+      position: absolute; top: calc(100% + .75rem); left: 0; right: 0; margin: 0;
+      padding: 1rem; border-radius: 20px; background: rgba(12,14,18,.96); border: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(18px); display: none; flex-direction: column; align-items: stretch;
+    }
+    .site-nav.open { display: flex; }
+    .nav-links { flex-direction: column; align-items: stretch; }
+    .nav-trigger, .nav-simple { width: 100%; justify-content: space-between; }
+    .dropdown { position: static; min-width: 0; padding-top: 0; display: none; opacity: 1; transform: none; pointer-events: auto; }
+    .nav-group.open .dropdown { display: block; }
+    .dropdown-inner { background: rgba(255,255,255,.03); box-shadow: none; }
+    .nav-cta { width: 100%; }
+  }
+</style>

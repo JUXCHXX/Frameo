@@ -1,0 +1,1 @@
+export{t as default}from"./ElectricLogo.ig1SjGD1.js";

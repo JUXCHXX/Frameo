@@ -1,0 +1,110 @@
+---
+import '../styles/global.css';
+import ElectricLogo from '../components/ui/ElectricLogo.jsx';
+import AssistantGuide from '../components/AssistantGuide.tsx';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: string;
+  noindex?: boolean;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description = 'Convierte videos en frames localmente en tu navegador. Sin subir archivos, sin backend, con privacidad total.',
+  canonical = new URL(Astro.url.pathname, Astro.site).href,
+  ogImage = new URL('/logo.svg', Astro.site).href,
+  ogType = 'website',
+  noindex = false,
+  schema,
+} = Astro.props;
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#07070B" />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/isotipo.svg" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <meta property="og:site_name" content="Frameo" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <title>{title}</title>
+    {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+  </head>
+  <body>
+    <div id="splash" class="splash" aria-label="Cargando Frameo">
+      <div class="splash-logo">
+        <ElectricLogo
+          client:load
+          src="/logo.svg"
+          color="#00F5D4"
+          glowColor="#C6FF3D"
+          scale={0.66}
+          strands={3}
+          bend={0.35}
+          crackle={0.35}
+          arcs={0}
+          speed={1.6}
+          intensity={1.15}
+          glow={1.45}
+          thickness={1.0}
+          fill={0.08}
+          interactive={false}
+        />
+      </div>
+      <p class="splash-text">cargando experiencia local</p>
+    </div>
+    <div id="page-shell" class="page-shell">
+      <slot />
+    </div>
+    <AssistantGuide client:load />
+    <script>
+      import gsap from 'gsap';
+      const splash = document.getElementById('splash');
+      const shell = document.getElementById('page-shell');
+      const reveal = () => {
+        if (!splash || splash.dataset.done) return;
+        splash.dataset.done = '1';
+        const tl = gsap.timeline();
+        tl.to(splash, { opacity: 0, duration: 0.7, ease: 'power2.inOut' })
+          .set(splash, { display: 'none' })
+          .fromTo(shell, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }, '-=0.15');
+      };
+      window.addEventListener('load', () => setTimeout(reveal, 1400));
+      setTimeout(reveal, 3200);
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  .splash {
+    position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; align-content: center; gap: 1.2rem;
+    background: radial-gradient(circle at center, rgba(14,42,42,.35), #07070b 58%);
+  }
+  .splash-logo { width: min(72vw, 560px); height: min(28vw, 220px); }
+  .splash-text {
+    margin: 0; font-size: .78rem; font-weight: 600; letter-spacing: .28em; text-transform: uppercase;
+    color: rgba(255,255,255,.55);
+  }
+  .page-shell { opacity: 0; }
+</style>

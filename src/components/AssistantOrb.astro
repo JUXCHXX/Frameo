@@ -1,0 +1,88 @@
+---
+---
+<div class="assistant" id="assistant">
+  <button class="orb-btn" id="orb-btn" aria-label="Abrir guía de Frameo" aria-expanded="false">
+    <span class="orb-aura"></span>
+    <span class="orb">
+      <span class="orb-face">
+        <span class="eye left"><i></i></span>
+        <span class="eye right"><i></i></span>
+      </span>
+    </span>
+  </button>
+  <div class="assistant-panel" id="assistant-panel" role="status" aria-live="polite">
+    <p class="assistant-title">Guía Frameo</p>
+    <p id="assistant-msg">Hola, soy tu guía. Mueve el cursor por la página y te orientaré. Todo se procesa local en tu navegador.</p>
+    <div class="assistant-actions">
+      <a href="/app" class="mini-link">Ir a /app</a>
+      <button id="assistant-next" class="mini-link" type="button">Otro tip</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const tips = [
+    'Carga tu video en /app y Frameo lo convierte a frames sin subirlo a ningún servidor.',
+    'Puedes elegir PNG para máxima calidad o JPG para archivos más livianos.',
+    'Los frames se nombran como frame_00001.png para mantener el orden correcto.',
+    'El ZIP se genera en tu navegador. Tu video nunca sale de tu computador.',
+    'Si un video es pesado, la app lo procesará por partes para cuidar la memoria.'
+  ];
+  let tip = 0;
+  const btn = document.getElementById('orb-btn');
+  const panel = document.getElementById('assistant-panel');
+  const msg = document.getElementById('assistant-msg');
+  const next = document.getElementById('assistant-next');
+  const eyes = document.querySelectorAll('.eye i');
+
+  btn?.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    panel?.classList.toggle('open', !open);
+  });
+  next?.addEventListener('click', () => { tip = (tip + 1) % tips.length; if (msg) msg.textContent = tips[tip]; });
+
+  window.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 8;
+    const y = (e.clientY / window.innerHeight - 0.5) * 8;
+    eyes.forEach((el) => { (el as HTMLElement).style.transform = `translate(${x}px, ${y}px)`; });
+  }, { passive: true });
+</script>
+
+<style>
+  .assistant { position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 120; display: flex; flex-direction: column; align-items: flex-end; gap: .75rem; }
+  .orb-btn { position: relative; width: 74px; height: 74px; border-radius: 50%; padding: 0; display: grid; place-items: center; }
+  .orb-aura {
+    position: absolute; inset: -10px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,245,212,.28), rgba(198,255,61,.08) 55%, transparent 72%);
+    filter: blur(2px); animation: aura 3s ease-in-out infinite;
+  }
+  .orb {
+    position: relative; width: 74px; height: 74px; border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #dffff8, #6fffe4 18%, #00bfa8 45%, #0d5f59 72%, #082f31 100%);
+    box-shadow: 0 12px 30px rgba(0,245,212,.28), inset 0 -10px 20px rgba(0,0,0,.25), inset 0 10px 20px rgba(255,255,255,.22);
+    transition: transform .25s ease;
+  }
+  .orb-btn:hover .orb { transform: scale(1.04) translateY(-1px); }
+  .orb-face { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .eye {
+    width: 16px; height: 18px; border-radius: 999px; background: rgba(255,255,255,.95);
+    display: grid; place-items: center; overflow: hidden; animation: blink 5s infinite;
+  }
+  .eye i { width: 7px; height: 7px; border-radius: 50%; background: #0a2424; transition: transform .08s linear; }
+  .assistant-panel {
+    width: min(320px, calc(100vw - 2rem)); padding: 1rem 1rem .9rem; border-radius: 18px;
+    background: rgba(14,18,22,.92); border: 1px solid rgba(255,255,255,.1); backdrop-filter: blur(18px);
+    box-shadow: 0 20px 50px rgba(0,0,0,.35);
+    opacity: 0; transform: translateY(10px) scale(.98); pointer-events: none; transition: .25s ease;
+  }
+  .assistant-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+  .assistant-title { margin: 0 0 .35rem; font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #bffcef; }
+  .assistant-panel p { margin: 0; font-size: .88rem; line-height: 1.55; color: rgba(255,255,255,.84); }
+  .assistant-actions { display: flex; gap: .75rem; margin-top: .8rem; }
+  .mini-link { font-size: .78rem; font-weight: 600; color: var(--lime); padding: 0; }
+  .mini-link:hover { text-decoration: underline; }
+  @keyframes aura { 50% { transform: scale(1.08); opacity: .8; } }
+  @keyframes blink { 0%, 46%, 48%, 100% { transform: scaleY(1); } 47% { transform: scaleY(.1); } }
+  @media (max-width: 720px) { .assistant { right: .85rem; bottom: .85rem; } .orb-btn, .orb { width: 62px; height: 62px; } }
+</style>

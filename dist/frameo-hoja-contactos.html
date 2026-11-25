@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frameo — hoja de contactos</title>
+<style>
+  /* Para usarla sobre tu landing: cambia --bg por "transparent" */
+  :root{--bg:transparent;--mint:#00F5D4;--lime:#C6FF3D;--T:10s}
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%}
+  body{background:transparent;display:grid;place-items:center;overflow:hidden}
+
+  .sheet{container-type:inline-size;position:relative;width:min(100%,1300px);aspect-ratio:100/36;overflow:hidden}
+  .sheet>*{position:absolute}
+
+  /* Escena reutilizable (todo en %, sirve para el video grande y las miniaturas) */
+  .scene{position:relative;overflow:hidden;background:linear-gradient(#0A1618,#0F3836 70%,#0B2A28)}
+  .scene .sun{position:absolute;width:11%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);
+    background:radial-gradient(circle,#F4FFB8 0 35%,var(--lime) 60%,rgba(198,255,61,0) 72%);
+    box-shadow:0 0 40px 10px rgba(198,255,61,.35)}
+  .scene::before,.scene::after{content:"";position:absolute;left:0;right:0;bottom:0}
+  .scene::before{height:52%;background:#0C2523;
+    clip-path:polygon(0 70%,14% 28%,28% 62%,44% 12%,60% 58%,76% 24%,90% 52%,100% 38%,100% 100%,0 100%)}
+  .scene::after{height:34%;background:#071413;
+    clip-path:polygon(0 60%,20% 20%,38% 70%,58% 30%,80% 72%,100% 25%,100% 100%,0 100%)}
+
+  /* Panel de video con esquinas de visor */
+  .video>*{position:absolute}
+  .video{position:absolute;left:1.5cqw;top:50%;width:54cqw;height:30.4cqw;margin-top:-15.2cqw;border-radius:1.6cqw;
+    border:.16cqw solid rgba(0,245,212,.35);box-shadow:0 0 4cqw rgba(0,245,212,.12)}
+  .video .sun{animation:sunx var(--T) linear infinite both,suny var(--T) ease-in-out infinite both}
+  @keyframes sunx{0%{left:10%}80%,100%{left:90%}}
+  @keyframes suny{0%{top:50%}40%{top:12%}80%,100%{top:50%}}
+  .tag{left:1.2cqw;top:.9cqw;font:600 1cqw ui-monospace,Menlo,Consolas,monospace;color:rgba(255,255,255,.7);z-index:3}
+  .trail{inset:0;transform-origin:left;background:linear-gradient(90deg,rgba(0,245,212,0),rgba(0,245,212,.2));
+    animation:trail var(--T) linear infinite both;will-change:transform}
+  @keyframes trail{0%{transform:scaleX(0);opacity:1}80%{transform:scaleX(1);opacity:1}86%,100%{transform:scaleX(1);opacity:0}}
+  .head{left:0;top:0;bottom:0;width:.26cqw;border-radius:1cqw;z-index:2;
+    background:linear-gradient(var(--mint),var(--lime));box-shadow:0 0 1.6cqw .3cqw rgba(198,255,61,.7);
+    animation:head var(--T) linear infinite both;will-change:transform}
+  @keyframes head{0%{transform:translateX(0);opacity:0}1%{opacity:1}80%{transform:translateX(53.7cqw);opacity:1}83%,100%{transform:translateX(53.7cqw);opacity:0}}
+  .corner{width:2.4cqw;height:2.4cqw;border:0 solid var(--mint);z-index:4;opacity:.9}
+  .c1{left:.9cqw;top:.9cqw;border-width:.3cqw 0 0 .3cqw;border-top-left-radius:.8cqw}
+  .c2{right:.9cqw;top:.9cqw;border-width:.3cqw .3cqw 0 0;border-top-right-radius:.8cqw}
+  .c3{left:.9cqw;bottom:.9cqw;border-width:0 0 .3cqw .3cqw;border-bottom-left-radius:.8cqw}
+  .c4{right:.9cqw;bottom:.9cqw;border-width:0 .3cqw .3cqw 0;border-bottom-right-radius:.8cqw}
+
+  /* Hoja de contactos */
+  .grid{left:59cqw;top:50%;width:39.6cqw;margin-top:-15.75cqw;display:grid;grid-template-columns:repeat(3,12.4cqw);gap:1.2cqw}
+  .thumb{position:relative;width:12.4cqw;height:6.98cqw;border-radius:.8cqw;border:.14cqw solid var(--mint);
+    box-shadow:0 0 1.2cqw rgba(0,245,212,.3);opacity:0;will-change:transform,opacity;
+    animation-duration:var(--T);animation-iteration-count:infinite;animation-fill-mode:both;
+    animation-timing-function:cubic-bezier(.2,.9,.3,1.15);animation-name:var(--an)}
+  .thumb .scene{position:absolute;inset:0}
+  .thumb::after{content:"";position:absolute;inset:0;background:var(--lime);opacity:0;border-radius:.7cqw;
+    animation:inherit;animation-name:var(--fn);animation-timing-function:linear}
+  .thumb span{position:absolute;left:.6cqw;bottom:.4cqw;z-index:2;font:700 .95cqw ui-monospace,Menlo,Consolas,monospace;
+    color:rgba(255,255,255,.9);letter-spacing:.05em}
+
+  @media (prefers-reduced-motion:reduce){
+    .thumb{animation:none;opacity:1}.thumb::after{display:none}
+    .head,.trail,.video .sun{animation:none}.head{opacity:0}.trail{display:none}.video .sun{left:50%;top:14%}
+  }
+</style>
+</head>
+<body>
+<div class="sheet" role="img" aria-label="Un video se escanea de lado a lado y va generando una hoja de contactos con sus frames numerados">
+  <div class="video scene">
+    <div class="sun"></div>
+    <div class="trail"></div><div class="head"></div>
+    <span class="tag">video.mp4</span>
+    <i class="corner c1"></i><i class="corner c2"></i><i class="corner c3"></i><i class="corner c4"></i>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+  // 12 miniaturas: cada una "se captura" cuando la línea de escaneo pasa por su posición
+  const N=12, grid=document.getElementById('grid'); let css='';
+  for(let k=0;k<N;k++){
+    const u=(k+.5)/N, p=+(u*80).toFixed(2);
+    css+=`@keyframes c${k}{0%,${(p-.05).toFixed(2)}%{opacity:0;transform:scale(.7)}${p}%{opacity:1;transform:scale(1.14)}${(p+2.5).toFixed(2)}%{transform:scale(1)}92%{opacity:1;transform:scale(1)}96%,100%{opacity:0;transform:scale(1)}}`;
+    css+=`@keyframes f${k}{0%,${p}%{opacity:0}${(p+.1).toFixed(2)}%{opacity:.85}${(p+4).toFixed(2)}%,100%{opacity:0}}`;
+    const t=document.createElement('div');t.className='thumb';
+    t.style.cssText=`--an:c${k};--fn:f${k}`;
+    const x=10+80*u, y=50-38*Math.sin(Math.PI*u);
+    t.innerHTML=`<div class="scene"><div class="sun" style="left:${x}%;top:${y}%"></div></div><span>${String(k+1).padStart(5,'0')}</span>`;
+    grid.appendChild(t);
+  }
+  const s=document.createElement('style');s.textContent=css;document.head.appendChild(s);
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+	"pid": 64448,
+	"port": 4321,
+	"url": "http://localhost:4321",
+	"urls": {
+		"local": [
+			"http://localhost:4321/"
+		],
+		"network": [
+			"http://192.168.0.9:4321/",
+			"http://192.168.252.1:4321/"
+		],
+		"networkInterfaceNames": [
+			"en0",
+			"bridge100"
+		]
+	},
+	"background": false,
+	"startedAt": "2026-11-25T01:11:14.222Z"
+}

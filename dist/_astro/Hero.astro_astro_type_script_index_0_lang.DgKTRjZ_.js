@@ -1,0 +1,1 @@
+import{t as e}from"./gsap.Dm7UF3sG.js";window.matchMedia(`(prefers-reduced-motion: reduce)`).matches||(e.from(`.hero-anim`,{y:28,opacity:0,duration:.9,stagger:.12,ease:`power3.out`,delay:1.7}),e.from(`.anim-main`,{scale:.94,opacity:0,duration:1.1,ease:`power3.out`,delay:1.9}));

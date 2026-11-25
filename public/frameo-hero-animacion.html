@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frameo — animación del hero</title>
+<style>
+  /* Para usarla sobre tu hero: cambia --bg por "transparent" */
+  :root{
+    --bg:transparent; --mint:#00F5D4; --lime:#C6FF3D; --ink:#0D1315;
+    --loop:9s; --ease:cubic-bezier(.65,0,.35,1);
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%}
+  body{background:transparent;display:grid;place-items:center;overflow:hidden;
+    font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+
+  .stage{position:relative;width:min(92vw,92vh,680px);aspect-ratio:1;
+    animation:bob 4.5s ease-in-out infinite}
+  .stage::before{content:"";position:absolute;inset:8% 4%;
+    background:radial-gradient(closest-side,rgba(0,245,212,.14),transparent 70%);
+    filter:blur(10px)}
+  @keyframes bob{50%{transform:translateY(-10px)}}
+
+  .scene{position:absolute;left:50%;top:54%;width:0;height:0;
+    transform-style:preserve-3d;transform:rotateX(60deg) rotateZ(45deg);
+    zoom:calc(min(92vw,92vh,680px)/680)}
+  .scene>*{position:absolute;transform-style:preserve-3d}
+
+  /* Losas con grosor */
+  .slab{border-radius:26px;background:linear-gradient(135deg,#131C1F,var(--ink));
+    border:2px solid var(--mint);box-shadow:0 0 28px rgba(0,245,212,.35),inset 0 0 30px rgba(0,245,212,.08)}
+  .slab::before,.slab::after{content:"";position:absolute;inset:-2px;border-radius:26px;
+    background:linear-gradient(135deg,var(--mint),var(--lime))}
+  .slab::before{transform:translateZ(-14px)}
+  .slab::after{transform:translateZ(-7px);opacity:.7}
+
+  /* Video */
+  .video{width:210px;height:210px;left:-275px;top:-105px}
+  .play{position:absolute;left:50%;top:44%;transform:translate(-35%,-50%);
+    border-left:44px solid var(--mint);border-top:27px solid transparent;border-bottom:27px solid transparent;
+    filter:drop-shadow(0 0 12px rgba(0,245,212,.7))}
+  .track{position:absolute;left:22px;right:22px;bottom:22px;height:6px;border-radius:6px;background:rgba(255,255,255,.12);overflow:hidden}
+  .fill{height:100%;width:100%;transform-origin:left;transform:scaleX(0);border-radius:6px;
+    background:linear-gradient(90deg,var(--mint),var(--lime));animation:fill var(--loop) var(--ease) infinite}
+  .name{position:absolute;left:22px;top:18px;font-size:13px;color:#8FA5A8;letter-spacing:.04em}
+  .scan{position:absolute;top:0;bottom:0;left:0;width:5px;border-radius:5px;opacity:0;
+    background:linear-gradient(var(--mint),var(--lime));box-shadow:0 0 18px 4px rgba(198,255,61,.65);
+    animation:scan var(--loop) var(--ease) infinite}
+  @keyframes scan{0%,9%{opacity:0;left:0}11%{opacity:1;left:0}24%{opacity:1;left:calc(100% - 5px)}26%,100%{opacity:0;left:calc(100% - 5px)}}
+  @keyframes fill{0%,10%{transform:scaleX(0)}24%,92%{transform:scaleX(1)}100%{transform:scaleX(1)}}
+
+  /* Frames */
+  .frame{position:absolute;transform-style:preserve-3d;width:210px;height:210px;left:-275px;top:-105px;border-radius:22px;opacity:0;
+    border:2px solid var(--c);background:color-mix(in srgb,var(--c) 10%,rgba(8,12,14,.72));
+    box-shadow:0 0 16px color-mix(in srgb,var(--c) 45%,transparent);
+    animation:fr var(--loop) infinite both;animation-delay:calc(var(--i)*.16s);
+    will-change:transform,opacity}
+  .frame span{position:absolute;right:16px;bottom:12px;font-size:20px;font-weight:800;color:var(--c);letter-spacing:.05em}
+  @keyframes fr{
+    0%,12%{opacity:0;transform:translate3d(0,0,2px) scale(1);animation-timing-function:var(--ease)}
+    15%{opacity:1;transform:translate3d(0,0,2px) scale(1);animation-timing-function:var(--ease)}
+    32%{opacity:1;transform:translate3d(0,0,var(--h)) scale(1)}
+    50%{opacity:1;transform:translate3d(0,0,var(--h)) scale(1);animation-timing-function:var(--ease)}
+    66%{opacity:1;transform:translate3d(345px,0,var(--h)) scale(.6);animation-timing-function:var(--ease)}
+    80%{opacity:1;transform:translate3d(345px,0,calc(18px + var(--i)*6px)) scale(.6)}
+    88%,100%{opacity:0;transform:translate3d(345px,0,8px) scale(.6)}
+  }
+
+  /* ZIP */
+  .zip{width:130px;height:130px;left:110px;top:-65px;animation:zipglow var(--loop) ease-in-out infinite}
+  .zip b{position:absolute;inset:0;display:grid;place-items:center;font-size:26px;font-weight:800;color:#fff;letter-spacing:.04em}
+  .zip i{position:absolute;left:50%;bottom:14px;width:0;height:0;margin-left:-9px;opacity:0;
+    border-top:12px solid var(--lime);border-left:9px solid transparent;border-right:9px solid transparent;
+    animation:arrow var(--loop) ease-in-out infinite}
+  @keyframes zipglow{
+    0%,80%{box-shadow:0 0 28px rgba(0,245,212,.3),inset 0 0 30px rgba(0,245,212,.08);border-color:var(--mint)}
+    88%{box-shadow:0 0 60px 10px rgba(198,255,61,.65),inset 0 0 40px rgba(198,255,61,.25);border-color:var(--lime)}
+    98%,100%{box-shadow:0 0 28px rgba(0,245,212,.3),inset 0 0 30px rgba(0,245,212,.08);border-color:var(--mint)}
+  }
+  @keyframes arrow{0%,84%{opacity:0;transform:translateY(-8px)}90%{opacity:1;transform:translateY(0)}96%{opacity:1;transform:translateY(6px)}100%{opacity:0;transform:translateY(6px)}}
+
+  /* Línea de conexión en el piso */
+  .link{left:-55px;top:-1px;width:165px;height:2px;transform:translateZ(1px);
+    background:repeating-linear-gradient(90deg,var(--mint) 0 8px,transparent 8px 16px);opacity:.5}
+
+  /* Pasos */
+  .steps{position:absolute;left:0;right:0;bottom:15%;height:34px;text-align:center}
+  .steps span{position:absolute;inset:0;opacity:0;font-family:'Poppins',system-ui,sans-serif;font-weight:600;
+    font-size:clamp(15px,2.6vw,20px);color:#fff;animation:step var(--loop) ease-in-out infinite both}
+  .steps em{font-style:normal;color:var(--lime)}
+  .steps span:nth-child(1){animation-name:s1}.steps span:nth-child(2){animation-name:s2}.steps span:nth-child(3){animation-name:s3}
+  @keyframes s1{0%{opacity:0}4%,22%{opacity:1}28%,100%{opacity:0}}
+  @keyframes s2{0%,26%{opacity:0}32%,56%{opacity:1}62%,100%{opacity:0}}
+  @keyframes s3{0%,60%{opacity:0}66%,94%{opacity:1}99%,100%{opacity:0}}
+
+  /* Etiqueta local */
+  .local{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;
+    padding:8px 16px;border-radius:999px;border:1px solid rgba(0,245,212,.35);background:rgba(0,245,212,.07);
+    color:#BFEFE6;font-size:13px;white-space:nowrap}
+  .local svg{width:14px;height:14px;stroke:var(--lime);fill:none;stroke-width:2.2}
+
+  @media (prefers-reduced-motion:reduce){
+    .steps span:nth-child(2){opacity:1;animation:none}
+    .stage,.frame,.scan,.fill,.zip,.zip i{animation:none}
+    .frame{opacity:1;transform:translate3d(0,0,var(--h))}
+    .fill{transform:scaleX(1)}
+  }
+</style>
+</head>
+<body>
+<div class="stage" role="img" aria-label="Un video se separa en frames numerados y se empaqueta en un archivo zip, todo en tu navegador">
+  <div class="scene">
+    <div class="link"></div>
+    <div class="slab video">
+      <span class="name">video.mp4</span>
+      <div class="play"></div>
+      <div class="track"><div class="fill"></div></div>
+      <div class="scan"></div>
+    </div>
+    <div class="slab zip"><b>.ZIP</b><i></i></div>
+    <div id="frames"></div>
+  </div>
+  <div class="steps"><span><em>1</em> Cargas tu video</span><span><em>2</em> Se separa en frames numerados</span><span><em>3</em> Descargas todo en un .zip</span></div>
+  <div class="local">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+    100% local · tu video no sale de tu equipo
+  </div>
+</div>
+
+<script>
+  // 6 frames numerados que suben, se desplazan y caen dentro del zip
+  const box = document.getElementById('frames');
+  box.style.cssText = 'position:absolute;transform-style:preserve-3d';
+  for (let i = 0; i < 6; i++) {
+    const f = document.createElement('div');
+    f.className = 'frame';
+    const mix = 100 - i * 18;
+    f.style.cssText = `--i:${i};--h:${46 + i * 36}px;--c:color-mix(in srgb,#00F5D4 ${mix}%,#C6FF3D)`;
+    f.innerHTML = `<span>${String(i + 1).padStart(5, '0')}</span>`;
+    box.appendChild(f);
+  }
+</script>
+</body>
+</html>

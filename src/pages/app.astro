@@ -1,0 +1,31 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import FrameoApp from '../components/FrameoApp.tsx';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Frameo App',
+  url: 'https://frameo.app/app',
+  applicationCategory: 'MultimediaApplication',
+  operatingSystem: 'Web',
+  description: 'Herramienta local para convertir video a frames y descargar un ZIP en tu navegador.',
+  isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+---
+<Layout
+  title="Frameo App — Convertir video a frames"
+  description="Herramienta local para convertir video a frames y descargar un ZIP en tu navegador. 100% privado, sin subir archivos."
+  schema={schema}
+>
+  <Header />
+  <main class="app-main">
+    <FrameoApp client:load />
+  </main>
+</Layout>
+
+<style>
+  .app-main { padding: 1.25rem 0 3rem; }
+</style>

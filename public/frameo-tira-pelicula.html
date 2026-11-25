@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frameo — tira de película</title>
+<style>
+  /* Para usarla sobre tu landing: cambia --bg por "transparent" */
+  :root{--bg:transparent;--mint:#00F5D4;--lime:#C6FF3D;--ink:#0D1315;--T:16s}
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%}
+  body{background:transparent;display:grid;place-items:center;overflow:hidden}
+
+  /* Todo se mide en cqw: la animación escala sola a cualquier ancho */
+  .film{container-type:inline-size;position:relative;width:min(100%,1400px);aspect-ratio:100/30;overflow:hidden}
+  .film>*{position:absolute}
+
+  /* Cinta continua a la izquierda */
+  .band{left:0;top:50%;width:63cqw;height:11.4cqw;margin-top:-5.7cqw;overflow:hidden;
+    background:linear-gradient(180deg,#0B1214,#111B1E 50%,#0B1214);
+    border-block:.18cqw solid rgba(0,245,212,.45);
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 12%,#000 88%,transparent 100%);
+            mask-image:linear-gradient(90deg,transparent 0,#000 12%,#000 88%,transparent 100%)}
+  .holes{position:absolute;left:-3.125cqw;width:70cqw;height:1.1cqw;will-change:transform;
+    background:repeating-linear-gradient(90deg,rgba(0,245,212,.6) 0 1.6cqw,transparent 1.6cqw 3.125cqw);
+    animation:holes .25s linear infinite}
+  .holes.top{top:.7cqw}.holes.bot{bottom:.7cqw}
+  @keyframes holes{to{transform:translateX(3.125cqw)}}
+
+  /* Línea de corte */
+  .cut{left:61.5cqw;top:50%;width:.16cqw;height:20cqw;margin-top:-10cqw;border-radius:1cqw;
+    background:linear-gradient(transparent,var(--lime) 30%,var(--mint) 70%,transparent);
+    box-shadow:0 0 1.4cqw .2cqw rgba(198,255,61,.55);animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{50%{opacity:.55}}
+
+  #frames{inset:0}
+  /* Frames */
+  .frame{position:absolute;left:0;top:50%;width:11cqw;height:7.4cqw;margin-top:-3.7cqw;border-radius:.9cqw;overflow:hidden;
+    background:linear-gradient(135deg,var(--a),#0A1A1C 85%);
+    animation:run var(--T) linear infinite;animation-delay:calc(var(--i)*-1s);will-change:transform,opacity}
+  .frame::before{content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 72% 30%,var(--b) 0 1.1cqw,transparent 1.2cqw),
+               linear-gradient(160deg,transparent 58%,rgba(0,0,0,.45) 58%)}
+  .frame::after{content:"";position:absolute;inset:0;border-radius:.9cqw;border:.2cqw solid var(--mint);
+    box-shadow:inset 0 0 1.2cqw rgba(0,245,212,.5);opacity:0;animation:edge var(--T) linear infinite;animation-delay:inherit}
+  .frame span{position:absolute;left:.8cqw;bottom:.5cqw;font:700 1.05cqw ui-monospace,Menlo,Consolas,monospace;
+    color:rgba(255,255,255,.85);letter-spacing:.06em}
+
+  @keyframes run{
+    0%{opacity:1;transform:translate3d(-14cqw,0,0)}
+    35%{opacity:1;transform:translate3d(56cqw,0,0) rotate(0) scale(1)}
+    41%{opacity:1;transform:translate3d(84cqw,calc(var(--dy)*.55),0) rotate(calc(var(--r)*.55)) scale(1.06)}
+    45%{opacity:1}
+    48%,100%{opacity:0;transform:translate3d(118cqw,var(--dy),0) rotate(var(--r)) scale(1.12)}
+  }
+  @keyframes edge{0%,34%{opacity:0}39%,46%{opacity:1}48%,100%{opacity:0}}
+
+  @media (prefers-reduced-motion:reduce){.frame,.frame::after,.holes,.cut{animation-play-state:paused}}
+</style>
+</head>
+<body>
+<div class="film" role="img" aria-label="Una tira de película se parte en cuadros sueltos y numerados">
+  <div class="band"><div class="holes top"></div><div class="holes bot"></div></div>
+  <div class="cut"></div>
+  <div id="frames"></div>
+</div>
+<script>
+  // 16 frames con un segundo de separación entre sí = flujo continuo
+  const dy=[-9,6,-4,10,-7,3,-11,8,-3,9,-6,5,-10,4,-8,7];
+  const rot=[-16,11,-8,18,-13,7,-19,14,-6,17,-12,9,-17,8,-14,12];
+  const box=document.getElementById('frames');
+  for(let i=0;i<16;i++){
+    const f=document.createElement('div');f.className='frame';
+    const p=(i*37)%100;
+    f.style.cssText=`--i:${i};--dy:${dy[i]}cqw;--r:${rot[i]}deg;`+
+      `--a:color-mix(in srgb,#00F5D4 ${100-p}%,#C6FF3D);--b:color-mix(in srgb,#C6FF3D ${100-p}%,#00F5D4)`;
+    f.innerHTML=`<span>${String(i+1).padStart(5,'0')}</span>`;
+    box.appendChild(f);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+---
+interface Props { size?: number; label?: string; }
+const { size = 180, label = 'Procesando localmente...' } = Astro.props;
+---
+<div class="metaball-loader" style={`--size:${size}px`} role="status" aria-live="polite">
+  <div class="metaball-wrap">
+    <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span>
+    <div class="metaball-center"><img src="/isotipo.svg" alt="" width="44" height="44" /></div>
+  </div>
+  <p>{label}</p>
+</div>
+
+<style>
+  .metaball-loader { display: grid; place-items: center; gap: 1rem; color: rgba(255,255,255,.78); }
+  .metaball-wrap {
+    position: relative; width: var(--size); height: var(--size); filter: blur(.2px);
+  }
+  .blob {
+    position: absolute; border-radius: 50%;
+    background: linear-gradient(135deg, #00f5d4, #c6ff3d);
+    mix-blend-mode: screen; opacity: .85;
+  }
+  .b1 { width: 38%; height: 38%; left: 31%; top: 12%; animation: m1 3.6s ease-in-out infinite; }
+  .b2 { width: 30%; height: 30%; left: 12%; top: 42%; animation: m2 3.2s ease-in-out infinite; }
+  .b3 { width: 28%; height: 28%; right: 14%; top: 44%; animation: m3 3.8s ease-in-out infinite; }
+  .b4 { width: 22%; height: 22%; left: 39%; bottom: 14%; animation: m4 3s ease-in-out infinite; }
+  .metaball-center {
+    position: absolute; inset: 0; margin: auto; width: 36%; height: 36%; border-radius: 50%;
+    display: grid; place-items: center; background: rgba(7,7,11,.72); border: 1px solid rgba(255,255,255,.08);
+    backdrop-filter: blur(4px);
+  }
+  .metaball-center img { width: 52%; height: auto; filter: drop-shadow(0 0 12px rgba(0,245,212,.4)); }
+  .metaball-loader p { margin: 0; font-size: .88rem; font-weight: 500; }
+  @keyframes m1 { 50% { transform: translate(0, 34%) scale(.9); } }
+  @keyframes m2 { 50% { transform: translate(52%, -20%) scale(1.1); } }
+  @keyframes m3 { 50% { transform: translate(-48%, -18%) scale(1.05); } }
+  @keyframes m4 { 50% { transform: translate(0, -45%) scale(1.15); } }
+</style>
