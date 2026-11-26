@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://capsule-render.vercel.app/api?type=waving&height=230&color=0:00F5D4,100:C6FF3D&text=frameo&fontColor=07070B&fontSize=78&fontAlignY=36&desc=Convierte%20video%20en%20frames.%20Local%2C%20simple%20y%20privado.&descSize=18&descAlignY=58&descColor=07070B" alt="frameo" width="100%" />
+<img src="public/logo.svg" alt="Frameo" width="600" />
 <img src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=22&pause=1400&color=00F5D4&center=true&vCenter=true&width=640&height=40&lines=Carga+tu+video.;Extrae+los+frames.;Descarga+tu+.zip.;Tu+video+nunca+sale+de+tu+computador." alt="Carga, extrae, descarga" />
 <br />
 <a href="https://frameo-flax.vercel.app/app"><img src="https://img.shields.io/badge/%E2%96%B6%20%20ABRIR%20FRAMEO-00F5D4?style=for-the-badge&labelColor=07070B" alt="Abrir Frameo" /></a>
