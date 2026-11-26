@@ -1,108 +1,181 @@
-# Frameo — Contexto del proyecto
+<div align="center">
+<img src="public/frameo-logo-v3.svg" alt="frameo" width="320" />
+<br />
+### Convierte cualquier video en frames. Sin subir nada.
  
-> Documento para contextualizar a la IA que me ayudará a construir este proyecto. Léelo completo antes de escribir código o proponer cambios.
+<p>
+  <b>Carga un video → espera → descarga un <code>.zip</code> con todos los frames numerados.</b><br />
+  Todo ocurre en tu navegador. Tu video <i>nunca</i> sale de tu computador.
+</p>
+<br />
+<a href="https://frameo-flax.vercel.app"><img src="https://img.shields.io/badge/PROBAR_FRAMEO-00F5D4?style=for-the-badge&logo=vercel&logoColor=07070B&labelColor=07070B" alt="Probar Frameo" /></a>
  
-## 1. Qué es Frameo
+<br /><br />
  
-**Frameo** es una aplicación web que convierte un video en una secuencia de imágenes, frame por frame, y entrega todo en un `.zip` con las imágenes numeradas y ordenadas.
+![Astro](https://img.shields.io/badge/Astro_7-07070B?style=flat-square&logo=astro&logoColor=00F5D4)
+![React](https://img.shields.io/badge/React_19-07070B?style=flat-square&logo=react&logoColor=00F5D4)
+![TypeScript](https://img.shields.io/badge/TypeScript-07070B?style=flat-square&logo=typescript&logoColor=00F5D4)
+![Vercel](https://img.shields.io/badge/Vercel-07070B?style=flat-square&logo=vercel&logoColor=C6FF3D)
+![Backend](https://img.shields.io/badge/backend-ninguno-C6FF3D?style=flat-square&labelColor=07070B)
+![IA](https://img.shields.io/badge/IA-ninguna-C6FF3D?style=flat-square&labelColor=07070B)
+![Privacidad](https://img.shields.io/badge/privacidad-100%25_local-00F5D4?style=flat-square&labelColor=07070B)
  
-**Flujo del usuario:**
+</div>
+<br />
+---
  
-1. El usuario abre la página y carga un video desde su computador.
-2. La página procesa el video y lo separa en frames.
-3. Aparece un botón para descargar el resultado.
-4. El usuario descarga un `.zip` con todos los frames como imágenes ordenadas.
-**Ejemplo del contenido del zip:**
+## ✦ ¿Qué es Frameo?
+ 
+**Frameo** es una herramienta web que separa un video en sus frames y te entrega todo en un solo `.zip`, con las imágenes ordenadas y listas para usar.
+ 
+Pensada para quien necesita las imágenes de un video: animadores, editores, estudiantes, investigadores, creadores de datasets o cualquiera que quiera "congelar" cada instante.
  
 ```
-frameo_video.zip
+mi_video.zip
 ├── frame_00001.png
 ├── frame_00002.png
 ├── frame_00003.png
 └── ...
 ```
  
-## 2. Principios no negociables
+Los nombres llevan **ceros a la izquierda**, así cualquier explorador de archivos los ordena bien.
  
-- **100% local.** El video nunca se sube a ningún servidor. Todo ocurre en el navegador de la persona. Esto es el principal argumento de venta (privacidad).
-- **Sin backend.** Solo archivos estáticos. Sin base de datos, sin cuentas, sin almacenamiento en la nube.
-- **Sin IA.** Es un problema clásico de procesamiento de video. No se necesita ningún modelo.
-- **Orden correcto siempre.** Los nombres de archivo llevan ceros a la izquierda (`frame_00001.png`) para que cualquier explorador de archivos los ordene bien.
-- **Simple de usar.** Cargar, esperar, descargar. Sin pasos innecesarios.
-## 3. Alcance
+---
  
-### MVP (primera versión)
+## ✦ Cómo funciona
  
-- Cargar un video con `<input type="file">` y también arrastrando y soltando.
-- Extraer los frames.
-- Barra de progreso durante la extracción.
-- Descargar un `.zip` con los frames numerados.
-- Selector de formato: PNG (sin pérdida, pesa más) o JPG (pesa menos).
-- Selector de frecuencia: extraer todos los frames o uno cada X.
-### Después del MVP (ideas)
+```mermaid
+flowchart LR
+    A[🎬 Cargas tu video] --> B[⚙️ Se extraen los frames<br/>en tu navegador]
+    B --> C[📊 Barra de progreso]
+    C --> D[📦 Se arma el .zip]
+    D --> E[⬇️ Descargas el resultado]
+```
  
-- Elegir rango de tiempo (desde / hasta).
-- Vista previa de los primeros frames antes de descargar.
-- Elegir el FPS de salida.
-- Procesar por lotes (varios zips) cuando el video es muy pesado.
-- Convertirlo en PWA para que funcione sin conexión.
-### Fuera de alcance
+1. **Carga** un video desde tu computador (clic o arrastrar y soltar).
+2. **Elige** el formato y la frecuencia de extracción.
+3. **Espera** mientras ves el progreso en tiempo real.
+4. **Descarga** el `.zip` con todos los frames.
+---
  
-- Subir videos a un servidor.
-- Cuentas de usuario, pagos o login.
-- Edición de video o de imágenes.
-- Cualquier función con IA.
-## 4. Enfoque técnico
+## ✦ Características
  
-### Extracción de frames (a decidir, en orden de preferencia)
+| | |
+|---|---|
+| 🔒 **100% local** | El video nunca se sube a un servidor. Todo se procesa en tu navegador. |
+| ⚡ **Rápido y simple** | Cargar, esperar, descargar. Sin cuentas, sin pasos de más. |
+| 🖼️ **PNG o JPG** | PNG sin pérdida (pesa más) o JPG (pesa menos). |
+| 🎚️ **Frecuencia a tu gusto** | Extrae todos los frames o uno cada X. |
+| 📊 **Progreso en vivo** | Siempre sabes en qué punto va la extracción. |
+| 🛑 **Cancelable** | Puedes detener el proceso a la mitad sin que se cuelgue la página. |
+| 🔢 **Orden correcto** | `frame_00001.png`, `frame_00002.png`… ordenados en cualquier sistema. |
+| ✨ **Interfaz animada** | Diseño oscuro, moderno y limpio, con animaciones propias. |
  
-1. **WebCodecs (`VideoDecoder`)**: precisión exacta de frames y buen rendimiento. Soporte en navegadores modernos basados en Chromium.
-2. **ffmpeg.wasm**: corre FFmpeg dentro del navegador, extrae frames exactos y acepta muchos formatos. Es más pesado de cargar.
-3. **`<video>` + `<canvas>`** (mover `currentTime` y dibujar cada cuadro): es lo más simple, pero menos preciso. Puede saltarse o repetir frames, así que solo sirve como plan B.
-### Generación del zip
+---
  
-- **fflate** (liviano) o **JSZip** para zips pequeños y medianos.
-- **client-zip** si se quiere generar el zip en streaming para no llenar la memoria.
-### Descarga directa a una carpeta (opcional)
+## ✦ Principios del proyecto
  
-- **File System Access API**: permite escribir los frames directamente en una carpeta que el usuario elija, sin pasar por la RAM. Solo funciona en Chrome y Edge.
-### Stack sugerido
+- **Privacidad primero.** Sin servidores, sin bases de datos, sin almacenamiento en la nube.
+- **Sin backend.** Es una aplicación web estática.
+- **Sin IA.** Es procesamiento de video clásico; no se necesita ningún modelo.
+- **Simple de usar.** Nada que estorbe entre tu video y tus frames.
+---
  
-- HTML + JavaScript puro (o Vite si hace falta empaquetar). Para esta herramienta no se necesita un framework pesado.
-- Despliegue como sitio estático (por ejemplo en Vercel).
-## 5. Puntos delicados a tener en cuenta
+## ✦ Stack tecnológico
  
-- **Memoria:** un video de 1 minuto a 30 FPS son 1.800 imágenes. A 60 FPS son 3.600. Los videos largos, en 4K o a 60 FPS pueden colgar la pestaña si todo se arma en RAM. Hay que pensar en procesamiento por lotes o streaming desde el diseño.
-- **Cancelar:** el usuario debe poder cancelar el proceso a la mitad sin que se cuelgue la página.
-- **Errores claros:** formato de video no soportado, archivo corrupto o memoria insuficiente deben mostrar mensajes comprensibles en español.
-- **Rendimiento:** la interfaz no debe congelarse mientras se procesa (usar Web Workers si hace falta).
-- **Nombres de archivo:** el zip y las imágenes deben tomar el nombre del video original cuando sea posible.
-## 6. Identidad de marca
+Aplicación web estática construida con **TypeScript y JavaScript moderno** dentro del ecosistema web.
  
-- **Nombre:** Frameo (en minúscula en el wordmark: `frameo`).
-- **Idea visual:** una **F** cuyo brazo del medio es un símbolo de **play**, dentro de las esquinas de un **visor de cámara**.
-- **Paleta:**
-  - Menta neón: `#00F5D4`
-  - Lima eléctrico: `#C6FF3D`
-  - Degradado: de `#00F5D4` a `#C6FF3D` (en diagonal)
-  - Fondo oscuro: `#07070B` (con un leve resplandor verdoso `#0E2A2A`)
-  - Texto principal: blanco `#FFFFFF`
+| Tecnología | Para qué se usa |
+|---|---|
+| **Astro 7** | Páginas y generación estática |
+| **React 19** | Componentes interactivos y la herramienta principal |
+| **TypeScript** | Lógica estricta de la aplicación (extractor de video) |
+| **JavaScript / JSX** | Componentes visuales auxiliares |
+| **HTML + CSS** | Estructura, estilos y animaciones |
+ 
+> TypeScript está en modo estricto (`tsconfig.json`) y Astro se integra con React desde `astro.config.mjs`.
+> La funcionalidad central vive en **`frame-extractor.ts`**.
+ 
+<details>
+<summary><b>📁 Composición del código</b></summary>
+<br />
+| Tipo | Cantidad |
+|---|---|
+| Componentes / páginas `.astro` | 7 |
+| Componentes React `.tsx` | 3 |
+| Componentes `.jsx` | 2 |
+| Módulo TypeScript | 1 |
+| Archivos CSS | 4 |
+| Demos HTML independientes | 3 |
+ 
+</details>
+---
+ 
+## ✦ Ejecutar en local
+ 
+```bash
+# 1. Clona el repositorio
+git clone https://github.com/JUXCHXX/frameo.git
+cd frameo
+ 
+# 2. Instala las dependencias
+npm install
+ 
+# 3. Inicia el servidor de desarrollo
+npm run dev
+```
+ 
+Para generar la versión de producción:
+ 
+```bash
+npm run build
+npm run preview
+```
+ 
+Como es un sitio 100% estático, se puede desplegar en Vercel, Netlify o cualquier hosting de archivos estáticos.
+ 
+---
+ 
+## ✦ Identidad de marca
+ 
+<div align="center">
+| Menta neón | Lima eléctrico | Fondo | Texto |
+|:---:|:---:|:---:|:---:|
+| ![#00F5D4](https://img.shields.io/badge/%20%20%20%20%20%20%20%20-00F5D4?style=flat-square) | ![#C6FF3D](https://img.shields.io/badge/%20%20%20%20%20%20%20%20-C6FF3D?style=flat-square) | ![#07070B](https://img.shields.io/badge/%20%20%20%20%20%20%20%20-07070B?style=flat-square) | ![#FFFFFF](https://img.shields.io/badge/%20%20%20%20%20%20%20%20-FFFFFF?style=flat-square) |
+| `#00F5D4` | `#C6FF3D` | `#07070B` | `#FFFFFF` |
+ 
+</div>
+- **Degradado:** de `#00F5D4` a `#C6FF3D`, en diagonal.
 - **Tipografía:** Poppins Bold.
-- **Estilo de la interfaz:** oscuro, moderno, limpio, con acentos en el degradado neón. Sin recargar.
-- **Archivos del logo:** `frameo-logo-v3.svg` (horizontal) y `frameo-icon-v3.svg` (icono cuadrado, para favicon y avatar).
-## 7. Sobre mí y cómo quiero que trabajes
+- **Logo:** una **F** cuyo brazo del medio es un símbolo de **play**, dentro de las esquinas de un visor de cámara.
+---
  
-- Soy desarrollador fullstack y prefiero construir las cosas desde cero antes que depender de soluciones ya hechas. Trabajo en Linux (Pop!_OS).
-- **Responde siempre en español.**
-- Explica brevemente el porqué de cada decisión técnica importante, sin rodeos.
-- Entrega código completo y funcional, no fragmentos sueltos.
-- Si hay varias formas de hacer algo, dime las opciones con sus pros y contras antes de elegir por mí.
-- Si algo del documento no está claro o hay un conflicto con los principios de la sección 2, pregúntame antes de seguir.
-- Avanza por partes: primero el MVP funcionando, después las mejoras.
-## 8. Primer paso sugerido
+## ✦ Hoja de ruta
  
-1. Confirmar la estrategia de extracción de frames (WebCodecs vs ffmpeg.wasm).
-2. Construir un prototipo mínimo: cargar un video, extraer unos pocos frames y descargarlos en un zip.
-3. Probarlo con videos de distintos tamaños para medir el consumo de memoria.
-4. Recién ahí construir la interfaz completa con la marca de Frameo.
+- [x] Cargar video (clic y arrastrar y soltar)
+- [x] Extracción de frames con barra de progreso
+- [x] Descarga en `.zip` con frames numerados
+- [x] Selector de formato (PNG / JPG)
+- [x] Selector de frecuencia
+- [x] Publicado en producción
+- [ ] Elegir rango de tiempo (desde / hasta)
+- [ ] Vista previa de los primeros frames
+- [ ] Elegir el FPS de salida
+- [ ] Procesamiento por lotes para videos muy pesados
+- [ ] Versión PWA para usar sin conexión
+---
+ 
+## ✦ Autor
+ 
+<div align="center">
+Hecho por **Juan David Florián Amador** · [@JUXCHXX](https://github.com/JUXCHXX)
+ 
+Desarrollador fullstack · Fundador de **Kyro / Digital Uplink Co**
+ 
+<br />
+<a href="https://frameo-flax.vercel.app"><b>frameo-flax.vercel.app</b></a>
+ 
+<sub>Tu video, tus frames, tu privacidad.</sub>
+ 
+</div>
  
